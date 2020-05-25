@@ -25,10 +25,23 @@ class CapstoneTestCase(unittest.TestCase):
 
         setup_db(self.app)
 
-        self.producer_headers = {
-            "Content-Type": "application/json",
-            "Authorization":  {'Token': 'eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6Ik4wUXdRVEUwTnpFMk0wTTVRVVF4TXpGRE9FTXhOMFkyUTBORk5FVkZPRFkxUlRRelJUa3hOQSJ9.eyJpc3MiOiJodHRwczovL2Rldi0xcGwzLTQ2NS5hdXRoMC5jb20vIiwic3ViIjoiYXV0aDB8NWU3ZjUzZTI5ZDhhMTgwYzg0ZGE2NGNmIiwiYXVkIjoiQ2FzdGluZ0FnZW5jeSIsImlhdCI6MTU5MDQwODUwNCwiZXhwIjoxNTkwNDE1NzA0LCJhenAiOiJyN2hjMnRhYnYyaTZpOHJYUEJXMm4zbFFLN29rbEhybiIsInNjb3BlIjoiIiwicGVybWlzc2lvbnMiOlsiZGVsZXRlOmFjdG9ycyIsImRlbGV0ZTptb3ZpZXMiLCJnZXQ6YWN0b3JzIiwiZ2V0Om1vdmllcyIsInBhdGNoOmFjdG9ycyIsInBhdGNoOm1vdmllcyIsInBvc3Q6YWN0b3JzIiwicG9zdDptb3ZpZXMiXX0.pMc0pR63syUDVq8mcKCB2xmwMtVT3Dwr9vXTOKVKENGy1CxA3QlYQR3yPP127v8v3j65caICy0RWPKhN0SzVQfDi-c-JRKwJZn718WQLQzQMVVt1RhoAsVy8wkNv4c18KGA2oHkaEqhqV522biUMxMBQGXoTPh3JI1GHechCheiqWxp5s4QEhbmlS4CGGXMP1sX-ih5VZEGXhFA3mcwASFLTua8DfcSTwmVRhkXSyEy48_IpiSvvW-lwDUzW1TW4dRBtp_NPF3h6HDKHOlgIlKuLw2gFhiEPqJyb5mkruOusFPkqP3LfXL0D7mD2ug4T7_aZQXkIJKlbKlnAEDsQmw'}
-        }
+        # self.assistant_headers =
+        # self.director_headers =
+        self.producer_headers = 'eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6Ik4wUXdRVEUwTnpFMk0wTTVRVVF4TXpGRE9FTXhOMFkyUTBORk5FVkZPRFkxUlRRelJUa3hOQSJ9.eyJpc3MiOiJodHRwczovL2Rldi0xcGwzLTQ2NS5hdXRoMC5jb20vIiwic3ViIjoiYXV0aDB8NWU3ZjUzZTI5ZDhhMTgwYzg0ZGE2NGNmIiwiYXVkIjoiQ2FzdGluZ0FnZW5jeSIsImlhdCI6MTU5MDQyMzU3NiwiZXhwIjoxNTkwNTA5OTc2LCJhenAiOiJyN2hjMnRhYnYyaTZpOHJYUEJXMm4zbFFLN29rbEhybiIsInNjb3BlIjoiIiwicGVybWlzc2lvbnMiOlsiZGVsZXRlOmFjdG9ycyIsImRlbGV0ZTptb3ZpZXMiLCJnZXQ6YWN0b3JzIiwiZ2V0Om1vdmllcyIsInBhdGNoOmFjdG9ycyIsInBhdGNoOm1vdmllcyIsInBvc3Q6YWN0b3JzIiwicG9zdDptb3ZpZXMiXX0.0ITdRZhkiiMNW0A8Hjyxrb3x3-H9rItEd4HO0a2gWuf_qBphNihZRR-nRsV4c8zyory-mnT-jSrpzcXa9wDlaAP-ZFqCk70uLINUSxO-EWVGYSkie41V-oTIaaYMQoXJ85EREG3rAmZW2FbrqGvI3JZouMTcRv6fRVvfwx5d3ym5_h1rKXuBkXnjKW594N-7_GqRNiE2zmxWeIYzUDqJJN41OkIm8H26pdYYRsEBaFsksMr28hxpjLymA-2zvcPUNsz-MO_Bf8EsGl795x7MsuxV-CvMyHVKdv8YyV6ule6qupI2A6wszYlWo-reAYFP2OQq9FA4MnGe_8XHONMX9g'
+
+        # self.assistant_headers = {
+        #     "Content-Type": "application/json",
+        #     "Authorization": os.getenv('CASTING_ASSISTANT')
+        # }
+        # self.director_headers = {
+        #     "Content-Type": "application/json",
+        #     "Authorization":  os.getenv('CASTING_DIRECTOR')
+        # }
+        # self.producer_headers = {
+        #     "Content-Type": "application/json",
+        #     "Authorization":  os.getenv('EXECUTIVE_PRODUCER')
+        # }
+
         # binds the app to the current context
         with self.app.app_context():
             self.db = SQLAlchemy()
@@ -44,9 +57,10 @@ class CapstoneTestCase(unittest.TestCase):
 
     def test_post_actors(self):
         res = self.client().post('/actors',
-                                 json={"name": "Mona", "age": 15,
+                                 json={"name": "Hudaasa", "age": 15,
                                        "gender": "female"},
-                                 headers=self.producer_headers)
+                                 headers={'Authorization':
+                                          'Bearer ' + self.producer_headers})
         data = json.loads(res.data)
 
         self.assertEqual(res.status_code, 200)
@@ -55,7 +69,7 @@ class CapstoneTestCase(unittest.TestCase):
 
     def test_401_sent_requesting_post_actors_without_auth_header(self):
         res = self.client().post('/actors',
-                                 json={"name": "Hala", "age": 15, "gender": "female"})
+                                 json={"name": "Halaaaa", "age": 15, "gender": "female"})
         data = json.loads(res.data)
 
         self.assertEqual(res.status_code, 401)
@@ -65,9 +79,10 @@ class CapstoneTestCase(unittest.TestCase):
     # ................................................ POST: /movies endpoint test ................................................
     def test_post_movies(self):
         res = self.client().post('/movies',
-                                 json={"title": "awsome1 movie",
+                                 json={"title": "shs movie",
                                        "year": 2024, "month": 12, "day": 10},
-                                 headers=self.producer_headers)
+                                 headers={'Authorization':
+                                          'Bearer ' + self.producer_headers})
         data = json.loads(res.data)
 
         self.assertEqual(res.status_code, 200)
@@ -76,7 +91,7 @@ class CapstoneTestCase(unittest.TestCase):
 
     def test_401_sent_requesting_post_movies_without_auth_header(self):
         res = self.client().post('/movies',
-                                 json={"title": "awsome2 movie", "year": 2024, "month": 12, "day": 10})
+                                 json={"title": "ss movie", "year": 2024, "month": 12, "day": 10})
         data = json.loads(res.data)
 
         self.assertEqual(res.status_code, 401)
@@ -85,7 +100,8 @@ class CapstoneTestCase(unittest.TestCase):
 
     # ................................................ GET: /actors endpoint test ................................................
     def test_get_actors(self):
-        res = self.client().get('/actors', headers=self.producer_headers)
+        res = self.client().get('/actors', headers={'Authorization':
+                                                    'Bearer ' + self.producer_headers})
         data = json.loads(res.data)
 
         self.assertEqual(res.status_code, 200)
@@ -102,7 +118,8 @@ class CapstoneTestCase(unittest.TestCase):
 
     # ................................................ GET: /movies endpoint test ................................................
     def test_get_movies(self):
-        res = self.client().get('/movies', headers=self.producer_headers)
+        res = self.client().get('/movies', headers={'Authorization':
+                                                    'Bearer ' + self.producer_headers})
         data = json.loads(res.data)
 
         self.assertEqual(res.status_code, 200)
@@ -119,8 +136,9 @@ class CapstoneTestCase(unittest.TestCase):
 
     # ................................................ PATCH: /actors endpoint test ................................................
     def test_patch_actors(self):
-        res = self.client().patch('/actors/3',
-                                  json={"age": 20}, headers=self.producer_headers)
+        res = self.client().patch('/actors/8',
+                                  json={"name": "HalaHala"}, headers={'Authorization':
+                                                                      'Bearer ' + self.producer_headers})
         data = json.loads(res.data)
 
         self.assertEqual(res.status_code, 200)
@@ -138,8 +156,9 @@ class CapstoneTestCase(unittest.TestCase):
 
     # ................................................ PATCH: /movies endpoint test ................................................
     def test_patch_movies(self):
-        res = self.client().patch('/movies/3',
-                                  json={"age": 20}, headers=self.producer_headers)
+        res = self.client().patch('/movies/2',
+                                  json={"title": "wow"}, headers={'Authorization':
+                                                                  'Bearer ' + self.producer_headers})
         data = json.loads(res.data)
 
         self.assertEqual(res.status_code, 200)
@@ -147,7 +166,7 @@ class CapstoneTestCase(unittest.TestCase):
         self.assertTrue(data['modified_movie'])
 
     def test_401_sent_requesting_patch_movies_without_auth_header(self):
-        res = self.client().patch('/movies/3',
+        res = self.client().patch('/movies/1',
                                   json={"age": 22})
         data = json.loads(res.data)
 
@@ -158,7 +177,8 @@ class CapstoneTestCase(unittest.TestCase):
     # ................................................ DELETE: /actors endpoint test ................................................
 
     def test_delete_actors(self):
-        res = self.client().delete('/actors/3', headers=self.producer_headers)
+        res = self.client().delete('/actors/2', headers={'Authorization':
+                                                         'Bearer ' + self.producer_headers})
         data = json.loads(res.data)
 
         self.assertEqual(res.status_code, 200)
@@ -166,7 +186,7 @@ class CapstoneTestCase(unittest.TestCase):
         self.assertTrue(data['deleted_actor'])
 
     def test_401_sent_requesting_delete_actors_without_auth_header(self):
-        res = self.client().delete('/actors/2')
+        res = self.client().delete('/actors/1')
         data = json.loads(res.data)
 
         self.assertEqual(res.status_code, 401)
@@ -175,7 +195,8 @@ class CapstoneTestCase(unittest.TestCase):
 
     # ................................................ DELETE: /movies endpoint test ................................................
     def test_delete_movies(self):
-        res = self.client().delete('/movies/3', headers=self.producer_headers)
+        res = self.client().delete('/movies/2', headers={'Authorization':
+                                                         'Bearer ' + self.producer_headers})
         data = json.loads(res.data)
 
         self.assertEqual(res.status_code, 200)
@@ -183,7 +204,7 @@ class CapstoneTestCase(unittest.TestCase):
         self.assertTrue(data['deleted_movie'])
 
     def test_401_sent_requesting_delete_movies_without_auth_header(self):
-        res = self.client().delete('/movies/2')
+        res = self.client().delete('/movies/1')
         data = json.loads(res.data)
 
         self.assertEqual(res.status_code, 401)

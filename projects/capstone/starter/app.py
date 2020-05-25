@@ -21,7 +21,8 @@ def create_app(test_config=None):
 
     @app.route('/', methods=['GET'])
     def hi():
-
+        # headers = request.headers
+        # print(headers)
         return "hello world"
 
     @app.route('/actors', methods=['GET'])
